@@ -38,7 +38,26 @@ namespace DataSync
         }
 
 
+        public static DataTable GetDataTableForSql(string Sql, string strConnection)
+        {
+            SqlConnection SqlConn = new SqlConnection(strConnection);
+            DataSet ds = new DataSet();
+            DataTable dt;
+            try
+            {
+                using (SqlDataAdapter sqldap = new SqlDataAdapter(Sql, SqlConn))
+                {
+                    sqldap.Fill(ds);
+                    dt = ds.Tables[0];
+                }
+                return dt;
+            }
+            catch (System.Exception ex)
+            {
+                return null;
+            }
 
+        }
 
 
         /// <summary>
@@ -70,8 +89,26 @@ namespace DataSync
         }
 
 
+        /// <summary>
+        /// 执行sql返回
+        /// </summary>
+        /// <param name="Sql"></param>
+        /// <param name="strConnection"></param>
+        /// <returns></returns>
+        public static int ExecSql(string Sql, string strConnection)
+        {
+            int result = 0;
+            using (SqlConnection conn = new SqlConnection(strConnection))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(Sql, conn))
+                {
+                    result = cmd.ExecuteNonQuery();
+                }
+            }
 
-
+            return result;
+        }
 
 
 
